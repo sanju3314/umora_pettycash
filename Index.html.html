@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umora Petty Cash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none; }
+        .show { display: block; }
+        .icon { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            text-align: center; 
+        }
+        .icon-lg { 
+            width: 32px; 
+            height: 32px; 
+            font-size: 24px; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Umora Petty Cash Login</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter username">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter password">
+                </div>
+                
+                <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                    Login
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-600 font-medium mb-2">Demo Credentials:</p>
+                <p class="text-xs text-gray-500">Employee: username = staff, password = request123</p>
+                <p class="text-xs text-gray-500">Admin: username = manager, password = finance2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden min-h-screen">
+        <!-- Navigation -->
+        <div class="bg-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Umora Petty Cash</h1>
+                    <div class="flex items-center space-x-4">
+                        <div id="navButtons" class="flex space-x-4">
+                            <!-- Navigation buttons will be inserted here -->
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600">
+                                Logged in as: <span id="userRole" class="font-medium capitalize"></span>
+                            </span>
+                            <button onclick="handleLogout()" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Employee Form -->
+            <div id="employeeForm" class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="icon icon-lg mr-3 text-blue-600">📄</span>
+                        Submit Reimbursement Request
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Employee Name</label>
+                                <input type="text" id="employeeName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Your full name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <input type="date" id="expenseDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Expenses Done Towards</label>
+                            <input type="text" id="expenseTowards" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Office supplies, Client meeting, Travel">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Approval By</label>
+                                <input type="text" id="approvalBy" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Manager/Supervisor name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Amount (Rs)</label>
+                                <input type="number" id="amount" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Receipt/Screenshot</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                                <span class="icon icon-lg mx-auto text-gray-400 mb-2 block">⬆️</span>
+                                <input type="file" id="fileUpload" accept="image/*,.pdf" class="hidden" onchange="handleFileUpload(this)">
+                                <label for="fileUpload" class="cursor-pointer">
+                                    <span class="text-blue-600 hover:text-blue-800 font-medium">Click to upload</span>
+                                    <span class="text-gray-500"> or drag and drop</span>
+                                </label>
+                                <p class="text-xs text-gray-500 mt-2">PNG, JPG, PDF up to 10MB</p>
+                                <p id="fileName" class="text-sm text-green-600 mt-2 hidden"></p>
+                            </div>
+                        </div>
+
+                        <button onclick="handleSubmit()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center">
+                            <span class="icon mr-2">📄</span>
+                            Submit Request
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="hidden space-y-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Pending</p>
+                                <p id="totalPending" class="text-3xl font-bold text-red-600">Rs. 0</p>
+                            </div>
+                            <span class="icon icon-lg text-red-600">💰</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">This Month Total</p>
+                                <p id="monthlyTotal" class="text-3xl font-bold text-blue-600">Rs. 0</p>
+                            </div>
+                            <span class="icon icon-lg text-blue-600">📄</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Active Employees</p>
+                                <p id="activeEmployees" class="text-3xl font-bold text-green-600">0</p>
+                            </div>
+                            <span class="icon icon-lg text-green-600">👥</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Notifications -->
+                <div id="emailNotifications" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <span class="icon text-yellow-600 mr-2">✉️</span>
+                        <h3 class="font-medium text-yellow-800">Recent Email Notifications</h3>
+                    </div>
+                    <div id="notificationsList"></div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                    <div class="flex items-center space-x-4">
+                        <label class="text-sm font-medium text-gray-700">Filter by Employee:</label>
+                        <select id="employeeFilter" onchange="filterRequests()" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Employees</option>
+                        </select>
+                        <span id="selectedPending" class="text-sm text-gray-600"></span>
+                    </div>
+                    
+                    <button onclick="exportMonthlyReport()" class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
+                        <span class="icon mr-2">⬇️</span>
+                        Export Monthly Report
+                    </button>
+                </div>
+
+                <!-- Requests Table -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Reimbursement Requests</h3>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expense Towards</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approval By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Requests will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let requests = [
+            {
+                id: 1,
+                date: '2025-07-10',
+                expenseTowards: 'Office Supplies',
+                approvalBy: 'John Manager',
+                amount: 2500,
+                employeeName: 'Priya Sharma',
+                fileName: 'receipt1.jpg',
+                status: 'pending',
+                submittedAt: '2025-07-10 14:30'
+            },
+            {
+                id: 2,
+                date: '2025-07-08',
+                expenseTowards: 'Client Meeting Lunch',
+                approvalBy: 'Sarah Director',
+                amount: 1800,
+                employeeName: 'Raj Kumar',
+                fileName: 'bill2.pdf',
+                status: 'paid',
+                submittedAt: '2025-07-08 16:45'
+            }
+        ];
+        let emailNotifications = [];
+
+        // Login Handler
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'manager' && password === 'finance2025') {
+                currentUser = { role: 'admin', username: 'manager' };
+                showMainApp();
+            } else if (username === 'staff' && password === 'request123') {
+                currentUser = { role: 'employee', username: 'staff' };
+                showMainApp();
+            } else {
+                alert('Invalid credentials. Try manager/finance2025 or staff/request123');
+            }
+        }
+
+        // Logout Handler
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Show Main Application
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userRole').textContent = currentUser.role;
+
+            setupNavigation();
+            if (currentUser.role === 'admin') {
+                showAdminDashboard();
+            } else {
+                showEmployeeForm();
+            }
+        }
+
+        // Setup Navigation
+        function setupNavigation() {
+            const navButtons = document.getElementById('navButtons');
+            
+            if (currentUser.role === 'employee') {
+                navButtons.innerHTML = '<span class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Submit Request</span>';
+            } else {
+                navButtons.innerHTML = `
+                    <button onclick="showEmployeeForm()" id="employeeBtn" class="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white">Submit Request</button>
+                    <button onclick="showAdminDashboard()" id="adminBtn" class="px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300">Admin Dashboard</button>
+                `;
+            }
+        }
+
+        // Show Employee Form
+        function showEmployeeForm() {
+            document.getElementById('employeeForm').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('employeeBtn').className = 'px-4 py-2 rounded-lg font-medium bg-blue-600 text-white';
+                document.getElementById('adminBtn').className = 'px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300';
+            }
+        }
+
+        // Show Admin Dashboard
+        function showAdminDashboard() {
+            document.getElementById('employeeForm').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            
+            document.getElementById('employeeBtn').className = 'px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300';
+            document.getElementById('adminBtn').className = 'px-4 py-2 rounded-lg font-medium bg-blue-600 text-white';
+            
+            updateDashboard();
+        }
+
+        // Handle File Upload
+        function handleFileUpload(input) {
+            const fileName = input.files[0]?.name;
+            if (fileName) {
+                document.getElementById('fileName').textContent = '✓ ' + fileName;
+                document.getElementById('fileName').classList.remove('hidden');
+            }
+        }
+
+        // Handle Form Submission
+        function handleSubmit() {
+            const employeeName = document.getElementById('employeeName').value;
+            const expenseDate = document.getElementById('expenseDate').value;
+            const expenseTowards = document.getElementById('expenseTowards').value;
+            const approvalBy = document.getElementById('approvalBy').value;
+            const amount = document.getElementById('amount').value;
+
+            if (!employeeName || !expenseDate || !expenseTowards || !approvalBy || !amount) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const newRequest = {
+                id: requests.length + 1,
+                date: expenseDate,
+                expenseTowards: expenseTowards,
+                approvalBy: approvalBy,
+                amount: parseFloat(amount),
+                employeeName: employeeName,
+                fileName: document.getElementById('fileUpload').files[0]?.name || '',
+                status: 'pending',
+                submittedAt: new Date().toLocaleString()
+            };
+
+            requests.push(newRequest);
+
+            // Add email notification
+            const notification = {
+                id: Date.now(),
+                message: `New reimbursement request from ${employeeName} for Rs. ${amount}`,
+                time: new Date().toLocaleString()
+            };
+            emailNotifications.unshift(notification);
+
+            // Reset form
+            document.getElementById('employeeName').value = '';
+            document.getElementById('expenseDate').value = '';
+            document.getElementById('expenseTowards').value = '';
+            document.getElementById('approvalBy').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('fileUpload').value = '';
+            document.getElementById('fileName').classList.add('hidden');
+
+            alert('Reimbursement request submitted successfully! Email notification sent to backend team.');
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const totalPending = requests.filter(req => req.status === 'pending').reduce((sum, req) => sum + req.amount, 0);
+            const monthlyTotal = requests.filter(req => {
+                const reqMonth = new Date(req.date).getMonth() + 1;
+                const currentMonth = new Date().getMonth() + 1;
+                return reqMonth === currentMonth;
+            }).reduce((sum, req) => sum + req.amount, 0);
+            const activeEmployees = [...new Set(requests.map(req => req.employeeName))].length;
+
+            document.getElementById('totalPending').textContent = 'Rs. ' + totalPending.toLocaleString();
+            document.getElementById('monthlyTotal').textContent = 'Rs. ' + monthlyTotal.toLocaleString();
+            document.getElementById('activeEmployees').textContent = activeEmployees;
+
+            updateEmployeeFilter();
+            updateRequestsTable();
+            updateNotifications();
+        }
+
+        // Update Employee Filter
+        function updateEmployeeFilter() {
+            const employees = [...new Set(requests.map(req => req.employeeName))];
+            const filter = document.getElementById('employeeFilter');
+            
+            filter.innerHTML = '<option value="all">All Employees</option>';
+            employees.forEach(emp => {
+                filter.innerHTML += `<option value="${emp}">${emp}</option>`;
+            });
+        }
+
+        // Filter Requests
+        function filterRequests() {
+            const selectedEmployee = document.getElementById('employeeFilter').value;
+            const selectedPending = document.getElementById('selectedPending');
+            
+            if (selectedEmployee !== 'all') {
+                const pending = requests.filter(req => req.employeeName === selectedEmployee && req.status === 'pending')
+                    .reduce((sum, req) => sum + req.amount, 0);
+                selectedPending.textContent = `Pending: Rs. ${pending.toLocaleString()}`;
+            } else {
+                selectedPending.textContent = '';
+            }
+            
+            updateRequestsTable();
+        }
+
+        // Update Requests Table
+        function updateRequestsTable() {
+            const selectedEmployee = document.getElementById('employeeFilter').value;
+            const filteredRequests = selectedEmployee === 'all' 
+                ? requests 
+                : requests.filter(req => req.employeeName === selectedEmployee);
+
+            const tbody = document.getElementById('requestsTableBody');
+            tbody.innerHTML = '';
+
+            filteredRequests.forEach(request => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${request.employeeName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.expenseTowards}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.approvalBy}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Rs. ${request.amount.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            request.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }">
+                            ${request.status === 'paid' ? 'Paid' : 'Pending'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        ${request.status === 'pending' 
+                            ? `<button onclick="markAsPaid(${request.id})" class="flex items-center text-green-600 hover:text-green-900 transition-colors">
+                                <span class="icon mr-1">✅</span>
+                                Mark Paid
+                               </button>`
+                            : '<span class="text-gray-400">Completed</span>'
+                        }
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Mark as Paid
+        function markAsPaid(id) {
+            const request = requests.find(req => req.id === id);
+            if (request) {
+                request.status = 'paid';
+                updateDashboard();
+            }
+        }
+
+        // Update Notifications
+        function updateNotifications() {
+            const notificationsDiv = document.getElementById('emailNotifications');
+            const notificationsList = document.getElementById('notificationsList');
+            
+            if (emailNotifications.length > 0) {
+                notificationsDiv.classList.remove('hidden');
+                notificationsList.innerHTML = '';
+                
+                emailNotifications.slice(0, 3).forEach(notification => {
+                    const div = document.createElement('div');
+                    div.className = 'text-sm text-yellow-700 mb-1';
+                    div.textContent = `${notification.time}: ${notification.message}`;
+                    notificationsList.appendChild(div);
+                });
+            } else {
+                notificationsDiv.classList.add('hidden');
+            }
+        }
+
+        // Export Monthly Report
+        function exportMonthlyReport() {
+            const currentMonth = new Date().getMonth() + 1;
+            const monthlyData = requests.filter(req => {
+                const reqMonth = new Date(req.date).getMonth() + 1;
+                return reqMonth === currentMonth;
+            });
+
+            const csvContent = [
+                ['Date', 'Employee', 'Expense Towards', 'Approval By', 'Amount (Rs)', 'Status'],
+                ...monthlyData.map(req => [
+                    req.date,
+                    req.employeeName,
+                    req.expenseTowards,
+                    req.approvalBy,
+                    req.amount,
+                    req.status
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `monthly_expenses_${new Date().toISOString().slice(0, 7)}.csv`;
+            a.click();
+        }
+
+        // Allow Enter key for login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('loginScreen').classList.contains('hidden')) {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>
